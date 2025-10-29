@@ -3,6 +3,32 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Timesheet System</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">Timesheet Management</h5>
+                <a asp-controller="Timesheet" asp-action="Index" class="btn btn-primary">Edit Timesheet</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">User weekly activity</h5>
+                <a asp-controller="Timesheet" asp-action="UserWeek" class="btn btn-primary">User weekly activity</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">User project hours</h5>
+                <a asp-controller="Timesheet" asp-action="ProjectTotals" class="btn btn-primary">User project hours</a>
+            </div>
+        </div>
+    </div>
 </div>
