@@ -1,20 +1,18 @@
 ﻿@model TimesheetSystem.ViewModels.TimesheetNavigationViewModel
-<div>
-	@* week selector: simpler than a calendar control for moving around weeks; would not work well for long timescales*@
-	<div class="form-group">
-		<div class="input-group align-items-center">
-			<p class="form-label mb-0 ml-4 fw-bold">Week Starting:</p>
-			<input type="text" class="form-control" value="@Model.WeekStartDate.ToString("dddd, dd MMMM yyyy")" readonly />
-			<a	asp-controller="Timesheet" 
-				asp-action="Index" 
-				asp-route-userId="@Model.SelectedUserId"
-				asp-route-weekStart="@Model.WeekStartDate.AddDays(-7).ToString("yyyy-MM-dd")"
-				class="btn btn-secondary">Prev. week</a>
-			<a asp-controller="Timesheet"
-			   asp-action="Index"
-			   asp-route-userId="@Model.SelectedUserId"
-			   asp-route-weekStart="@Model.WeekStartDate.AddDays(7).ToString("yyyy-MM-dd")"
-			   class="btn btn-secondary">Next week</a>
-		</div>
+@* week selector: simpler than a calendar control for moving around weeks; would not work well for long timescales*@
+<div class="form-group">
+	<div class="input-group align-items-center">
+		<p class="form-label mb-0 ml-4 fw-bold">Week Starting:</p>
+		<input type="text" class="form-control" value="@Model.WeekStartDate.ToString("dddd, dd MMMM yyyy")" readonly />
+		<a asp-controller="Timesheet"
+		   asp-action="Index"
+		   asp-route-userId="@Model.SelectedUserId"
+		   asp-route-weekStart="@Model.WeekStartDate.AddDays(-7).ToString("yyyy-MM-dd")"
+		   class="btn btn-secondary">Prev. week</a>
+		<a asp-controller="Timesheet"
+		   asp-action="Index"
+		   asp-route-userId="@Model.SelectedUserId"
+		   asp-route-weekStart="@Model.WeekStartDate.AddDays(7).ToString("yyyy-MM-dd")"
+		   class="btn btn-secondary">Next week</a>
 	</div>
 </div>
