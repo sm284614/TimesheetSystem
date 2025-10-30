@@ -6,17 +6,28 @@ namespace TimesheetSystem.Data
     {
         public static readonly List<User> Users =
         [
-            new () { UserId = 1, Name = "Alice Ahmed" },
-            new () { UserId = 2, Name = "Bobby Brown" },
-            new() { UserId = 3, Name = "Clara Clark" },
-            new() { UserId = 4, Name = "Donny Darko" }
+            new (1, "Alice Ahmed" ),
+            new (2, "Bobby Brown"),
+            new(3, "Clara Clark"),
+            new(4, "Donny Darko")
         ];
         public static readonly List<Project> Projects =
         [
-            new () { ProjectId = 1, Name = "Stadium" },
-            new () { ProjectId = 2, Name = "Library" },
-            new() { ProjectId = 3, Name = "Market" },
-            new() { ProjectId = 4, Name = "Station" }
+            new (1, "Stadium"),
+            new (2, "Library"),
+            new(3, "Market"),
+            new(4, "Station")
+        ];
+        public static readonly List<UserProject> UserProjects =
+        [
+            new (1, 1),
+            new (1, 2),
+            new (2, 2),
+            new (2, 3),
+            new (3, 3),
+            new (3, 4),
+            new (4, 1),
+            new (4, 4)
         ];
     }
 }

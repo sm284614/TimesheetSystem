@@ -1,3 +1,6 @@
+using TimesheetSystem.Services;
+using TimesheetSystem.Data;
+
 namespace TimesheetSystem
 {
     public class Program
@@ -8,6 +11,12 @@ namespace TimesheetSystem
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            //register services
+            builder.Services.AddSingleton<ITimesheetDataStore, TimesheetDataStore>();
+            builder.Services.AddSingleton<ITimesheetServices, TimesheetServices>();
+            builder.Services.AddSingleton<IUserServices, UserServices>();
+            builder.Services.AddSingleton<IProjectServices, ProjectServices>();
 
             var app = builder.Build();
 

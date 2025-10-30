@@ -8,8 +8,9 @@ namespace TimesheetSystem.Data
         IEnumerable<TimesheetEntry> GetByUserAndWeek(int userId, DateTime weekStart);
         IEnumerable<User> Users { get; }
         IEnumerable<Project> Projects { get; }
+        IEnumerable<Project> UserProjects(int userId); 
         int Add(TimesheetEntry entry);
-        bool Update(TimesheetEntry entry);
+        bool Edit(TimesheetEntry entry);
         bool Delete(int id);
         bool ExistsForUserProjectDate(int userId, int projectId, DateTime date);
     }

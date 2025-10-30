@@ -4,22 +4,27 @@ namespace TimesheetSystem.Models
 {
     public class TimesheetEntry
     {
-        public int TimeSheetEntryId { get; set; }
+        public int Id { get; set; }
 
+        [Display(Name = "User")]
         [Required(ErrorMessage = "User is required")]
         public int UserId { get; set; }
 
+        [Display(Name = "Project")]
         [Required(ErrorMessage = "Project is required")]
         public int ProjectId { get; set; }
 
         [Required(ErrorMessage = "Date is required")]
-        public DateOnly Date { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime Date { get; set; }
 
+        [Display(Name = "Hours")]
         [Required(ErrorMessage = "Hours is required")]
         [Range(0.01, 24.0, ErrorMessage = "Hours must be between 0.01 and 24.0")] //assuming max 24 hours per day, ignoring crazy daylight-savings erors?
         public decimal Hours { get; set; } //decimal should prevent float rounding drift
 
-        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
+        [Display(Name = "Description (Optional)")]
+        [StringLength(255, ErrorMessage = "Description cannot exceed 255 characters")]
         public string Description { get; set; } = "";
     }
 }

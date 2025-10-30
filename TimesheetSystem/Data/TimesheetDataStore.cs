@@ -4,38 +4,65 @@ namespace TimesheetSystem.Data
 {
     public class TimesheetDataStore : ITimesheetDataStore
     {
-        public IEnumerable<User> Users => throw new NotImplementedException();
+        private int _nextId = 1;
+        public IEnumerable<User> Users => TestData.Users;
+        public IEnumerable<Project> Projects => TestData.Projects;
+        public IEnumerable<Project> UserProjects(int userId)
+        {
+            return from up in TestData.UserProjects
+                   join p in TestData.Projects on up.ProjectId equals p.Id
+                   where up.UserId == userId
+                   select p;
+        }
 
-        public IEnumerable<Project> Projects => throw new NotImplementedException();
+        public List<TimesheetEntry> TimesheetEntries = [];
 
         public int Add(TimesheetEntry entry)
         {
-            throw new NotImplementedException();
+            entry.Id = _nextId++;
+            TimesheetEntries.Add(entry);
+            return entry.Id;
         }
-
+        public bool Edit(TimesheetEntry entry)
+        {
+            TimesheetEntry? existingEntry = GetById(entry.Id);
+            if (existingEntry == null)
+            {
+                return false;
+            }
+            existingEntry.UserId = entry.UserId;
+            existingEntry.ProjectId = entry.ProjectId;
+            existingEntry.Date = entry.Date;
+            existingEntry.Hours = entry.Hours;
+            existingEntry.Description = entry.Description;
+            return true;
+        }
         public bool Delete(int id)
         {
-            throw new NotImplementedException();
+            TimesheetEntry? existingEntry = GetById(id);
+            if (existingEntry == null)
+            {
+                return false;
+            }
+            TimesheetEntries.Remove(existingEntry);
+            return true;
         }
-
-        public bool ExistsForUserProjectDate(int userId, int projectId, DateTime date)
-        {
-            throw new NotImplementedException();
-        }
-
         public TimesheetEntry? GetById(int id)
         {
-            throw new NotImplementedException();
+           return TimesheetEntries.FirstOrDefault(e => e.Id == id);
         }
-
         public IEnumerable<TimesheetEntry> GetByUserAndWeek(int userId, DateTime weekStart)
         {
             throw new NotImplementedException();
         }
-
-        public bool Update(TimesheetEntry entry)
+        public bool ExistsForUserProjectDate(int userId, int projectId, DateTime date)
         {
-            throw new NotImplementedException();
+            return TimesheetEntries.Any(e =>
+                e.UserId == userId &&
+                e.ProjectId == projectId &&
+                e.Date == date);
         }
+
+
     }
 }
