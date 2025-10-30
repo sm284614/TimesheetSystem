@@ -1,11 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+	ViewData["Title"] = "Home Page";
 }
+<div class="container col-md-8 offset-md-2">
+	<div class="text-center">
+		<h1 class="display-4">Timesheet System</h1>
+	</div>
 
-<div class="text-center">
-    <h1 class="display-4">Timesheet System</h1>
-</div>
-
-<div class="row">
-    <a asp-controller="Timesheet" asp-action="Index" class="btn btn-primary">Edit Timesheet</a>
+	<div class="row col-md-4 offset-md-4">
+		<a asp-controller="Timesheet" asp-action="Index" class="btn btn-primary">Go!</a>
+	</div>
 </div>

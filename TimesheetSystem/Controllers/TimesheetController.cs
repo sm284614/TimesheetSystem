@@ -53,7 +53,7 @@ namespace TimesheetSystem.Controllers
         {
             var selectedWeekStart = weekStart ?? DateHelper.GetMondayOfWeek(DateTime.Today); //weekstart should already be Monday!
             var selectedUserId = userId ?? 0;
-            var projects = _projectServices.GetProjectsByUserId(selectedUserId) ?? Enumerable.Empty<Project>();
+            var projects = _projectServices.GetProjectsByUserId(selectedUserId) ?? [];
             var viewModel = new TimesheetEntryFormViewModel
             {
                 NavigationData = new TimesheetNavigationViewModel
@@ -65,17 +65,115 @@ namespace TimesheetSystem.Controllers
                 TimesheetEntry = new TimesheetEntry()
                 {
                     UserId = selectedUserId,
-                    Date = selectedWeekStart, 
-                    AvailableProjects = projects.ToList() ,
+                    Date = selectedWeekStart,
+                    AvailableProjects = projects.ToList(),
                 }
             };
 
             return View(viewModel);
         }
-        public IActionResult Edit(int? userId, int? timesheetEntryId)
+        [HttpPost]
+        public IActionResult AddEntry(TimesheetEntryFormViewModel entry)
         {
+            if (!ModelState.IsValid)
+            {
+                RepopulateFormData(entry);
+                return View("Add", entry);
+            }
+            var result = _timesheetServices.AddEntry(entry.TimesheetEntry);
+            if (!result.IsSuccess)
+            {
+                RepopulateFormData(entry);
+                TempData["Error"] = result.ErrorMessage;
+                return View("Add", entry);
+            }
+            TempData["Success"] = "Timesheet entry added successfully.";
+            // redirect back to index
+            return RedirectToAction(
+                "Index",
+                new { userId = entry.NavigationData.SelectedUserId, weekStart = entry.NavigationData.WeekStartDate.ToString("yyyy-MM-dd") }
+            );
+        }
+        public IActionResult Edit(int timesheetEntryId, int? userId, DateTime? weekStart)
+        {
+            // Get the existing entry
+            var existingEntry = _timesheetServices.GetEntryById(timesheetEntryId);
 
-            return View();
+            if (existingEntry == null)
+            {
+                TempData["Error"] = "Timesheet entry not found.";
+                return RedirectToAction("Index");
+            }
+
+            var selectedWeekStart = weekStart ?? DateHelper.GetMondayOfWeek(existingEntry.Date);
+            var selectedUserId = userId ?? existingEntry.UserId;
+
+            var projects = _projectServices.GetProjectsByUserId(selectedUserId) ?? [];
+
+            var viewModel = new TimesheetEntryFormViewModel
+            {
+                NavigationData = new TimesheetNavigationViewModel
+                {
+                    SelectedUserId = selectedUserId,
+                    WeekStartDate = selectedWeekStart,
+                    AvailableUsers = _userServices.GetAllUsers().ToList()
+                },
+                TimesheetEntry = existingEntry
+            };
+
+            viewModel.TimesheetEntry.AvailableProjects = projects.ToList();
+
+            return View("Add", viewModel); // Reuse the Add view
+        }
+        [HttpPost]
+        public IActionResult EditEntry(TimesheetEntryFormViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                RepopulateFormData(viewModel);
+                return View("Add", viewModel);
+            }
+
+            var result = _timesheetServices.EditEntry(viewModel.TimesheetEntry);
+
+            if (!result.IsSuccess)
+            {
+                RepopulateFormData(viewModel);
+                TempData["Error"] = result.ErrorMessage;
+                return View("Add", viewModel);
+            }
+
+            TempData["Success"] = "Timesheet entry updated successfully.";
+            return RedirectToAction(
+                "Index",
+                new
+                {
+                    userId = viewModel.NavigationData.SelectedUserId,
+                    weekStart = viewModel.NavigationData.WeekStartDate.ToString("yyyy-MM-dd")
+                }
+            );
+        }
+        [HttpGet]
+        public IActionResult DeleteEntry(int id, int userId, DateTime weekStart)
+        {
+            var result = _timesheetServices.DeleteEntry(id, userId);
+            if (!result.IsSuccess)
+            {
+                TempData["Error"] = "Failed to delete timesheet entry.";
+            }
+            else
+            {
+                TempData["Success"] = "Timesheet entry deleted successfully.";
+            }
+            // redirect back to index
+            return RedirectToAction(
+                "Index",
+                new
+                {
+                    userId,
+                    weekStart = weekStart.ToString("yyyy-MM-dd")
+                }
+            );
         }
         public IActionResult ProjectTotals()
         {
@@ -86,5 +184,10 @@ namespace TimesheetSystem.Controllers
             return View();
         }
 
+        private void RepopulateFormData(TimesheetEntryFormViewModel viewModel)
+        {
+            viewModel.TimesheetEntry.AvailableProjects = _projectServices.GetProjectsByUserId(viewModel.TimesheetEntry.UserId).ToList();
+            viewModel.NavigationData.AvailableUsers = _userServices.GetAllUsers().ToList();
+        }
     }
 }

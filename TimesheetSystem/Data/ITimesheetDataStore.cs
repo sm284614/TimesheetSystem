@@ -10,7 +10,7 @@ namespace TimesheetSystem.Data
         IEnumerable<Project> Projects { get; }
         IEnumerable<Project> UserProjects(int userId); 
         int Add(TimesheetEntry entry);
-        bool Edit(TimesheetEntry entry);
+        bool Update(TimesheetEntry entry);
         bool Delete(int id);
         bool ExistsForUserProjectDate(int userId, int projectId, DateTime date);
     }

@@ -9,12 +9,11 @@ namespace TimesheetSystem.Data
         public IEnumerable<Project> Projects => TestData.Projects;
         public IEnumerable<Project> UserProjects(int userId)
         {
+            // SELECT * FROM userProjects JOIN Projects ON userProjects.ProjectId = Project.Id WHERE userProjects.UserId = 'userId'
             return from userProjects in TestData.UserProjects
                    join project in TestData.Projects on userProjects.ProjectId equals project.Id
                    where userProjects.UserId == userId
                    select project;
-
-            // SELECT * AS project FROM userProjects JOIN Projects P ON userProjects.ProjectId = P.Id WHERE userProjects.UserId = userId
         }
         public List<TimesheetEntry> TimesheetEntries = [];
         public int Add(TimesheetEntry entry)
@@ -23,7 +22,7 @@ namespace TimesheetSystem.Data
             TimesheetEntries.Add(entry);
             return entry.Id;
         }
-        public bool Edit(TimesheetEntry entry)
+        public bool Update(TimesheetEntry entry)
         {
             TimesheetEntry? existingEntry = GetById(entry.Id);
             if (existingEntry == null)

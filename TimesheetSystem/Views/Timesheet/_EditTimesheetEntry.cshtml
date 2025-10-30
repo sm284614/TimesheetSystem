@@ -1,46 +1,62 @@
-﻿@model TimesheetSystem.Models.TimesheetEntry
-
+﻿@model TimesheetSystem.ViewModels.TimesheetEntryFormViewModel
 <div class="card">
-	<div class="card-header">
-		<h3>Add Timesheet Entry</h3>
-	</div>
-	<div class="card-body">
-		<form asp-controller="Timesheet" asp-action="Create" method="post">
-			<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <div class="card-header">
+        <h3>@(Model.TimesheetEntry.Id > 0 ? "Edit" : "Add") Timesheet Entry</h3>
+    </div>
+    <div class="card-body">
+        <form asp-controller="Timesheet"
+              asp-action="@(Model.TimesheetEntry.Id > 0 ? "EditEntry" : "AddEntry")"
+              method="post">
 
-			<div class="form-group mb-3">
-				<label asp-for="ProjectId" class="form-label"></label>
-				<select asp-for="ProjectId" class="form-select" asp-items="@(new SelectList(Model.AvailableProjects, "Id", "Name"))">
-					<option value="">Select Project:</option>
-				</select>
-				<span asp-validation-for="ProjectId" class="text-danger"></span>
-			</div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-			<div class="form-group mb-3">
-				<label asp-for="Date" class="form-label"></label>
-				<input asp-for="Date" type="date" class="form-control" />
-				<span asp-validation-for="Date" class="text-danger"></span>
-			</div>
+            <!-- Hidden fields -->
+            <input type="hidden" asp-for="TimesheetEntry.UserId" />
+            <input type="hidden" asp-for="TimesheetEntry.Id" />
+            <input type="hidden" asp-for="NavigationData.SelectedUserId" />
+            <input type="hidden" asp-for="NavigationData.WeekStartDate" />
 
-			<div class="form-group mb-3">
-				<label asp-for="Hours" class="form-label"></label>
-				<input asp-for="Hours" type="number" step="0.1" min="0.1" max="24" class="form-control" />
-				<span asp-validation-for="Hours" class="text-danger"></span>
-				<small class="form-text text-muted">Enter hours worked (0.1 to 24.0)</small>
-			</div>
+            <div class="form-group mb-3">
+                <label asp-for="TimesheetEntry.ProjectId" class="form-label"></label>
+                <select asp-for="TimesheetEntry.ProjectId"
+                        class="form-select"
+                        asp-items="@(new SelectList(Model.TimesheetEntry.AvailableProjects, "Id", "Name"))">
+                    <option value="">Select Project:</option>
+                </select>
+                <span asp-validation-for="TimesheetEntry.ProjectId" class="text-danger"></span>
+            </div>
 
-			<div class="form-group mb-3">
-				<label asp-for="Description" class="form-label"></label>
-				<textarea asp-for="Description" class="form-control" rows="3" maxlength="500"></textarea>
-				<span asp-validation-for="Description" class="text-danger"></span>
-				<small class="form-text text-muted">Optional: Describe the work performed</small>
-			</div>
+            <div class="form-group mb-3">
+                <label asp-for="TimesheetEntry.Date" class="form-label"></label>
+                <input asp-for="TimesheetEntry.Date" type="date" class="form-control" />
+                <span asp-validation-for="TimesheetEntry.Date" class="text-danger"></span>
+            </div>
 
-			<div class="form-group">
-				<button type="submit" class="btn btn-primary">Save Entry</button>
-				<a asp-controller="Timesheet" asp-action="Index" class="btn btn-secondary">Cancel</a>
-			</div>
-		</form>
-	</div>
+            <div class="form-group mb-3">
+                <label asp-for="TimesheetEntry.Hours" class="form-label"></label>
+                <input asp-for="TimesheetEntry.Hours" type="number" step="0.1" min="0.1" max="24" class="form-control" />
+                <span asp-validation-for="TimesheetEntry.Hours" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="TimesheetEntry.Description" class="form-label"></label>
+                <textarea asp-for="TimesheetEntry.Description" class="form-control" rows="3" maxlength="500"></textarea>
+                <span asp-validation-for="TimesheetEntry.Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    @(Model.TimesheetEntry.Id > 0 ? "Update" : "Save") Entry
+                </button>
+                <a asp-controller="Timesheet"
+                   asp-action="Index"
+                   asp-route-userId="@Model.NavigationData.SelectedUserId"
+                   asp-route-weekStart="@Model.NavigationData.WeekStartDate.ToString("yyyy-MM-dd")"
+                   class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
 </div>
-
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

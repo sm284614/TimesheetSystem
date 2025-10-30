@@ -3,7 +3,7 @@
 	@* week selector: simpler than a calendar control for moving around weeks; would not work well for long timescales*@
 	<div class="form-group">
 		<div class="input-group align-items-center">
-			<label class="form-label mb-0 fw-bold">Week Starting:</label>
+			<p class="form-label mb-0 ml-4 fw-bold">Week Starting:</p>
 			<input type="text" class="form-control" value="@Model.WeekStartDate.ToString("dddd, dd MMMM yyyy")" readonly />
 			<a	asp-controller="Timesheet" 
 				asp-action="Index" 
