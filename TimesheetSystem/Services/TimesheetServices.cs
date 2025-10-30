@@ -16,34 +16,43 @@ namespace TimesheetSystem.Services
             _userServices = userService;
             _projectServices = projectService;
         }
-        public ValidationResult<int> AddEntry(TimesheetEntry entry)
+        public ValidationResult<int> AddEntry(TimesheetEntry entry, int currentUserId)
         {
+            if (entry.UserId != currentUserId)
+            {
+                return ValidationResult<int>.Failure("Not authorised to add entries for other users");
+            }
             var validation = ValidateTimesheetEntry(entry);
             if (!validation.IsSuccess)
+            {
                 return ValidationResult<int>.Failure(validation.ErrorMessage);
-
+            }
             var newId = _dataStore.Add(entry);
             return ValidationResult<int>.Success(newId);
         }
-        public ValidationResult<bool> EditEntry(TimesheetEntry entry)
+        public ValidationResult<bool> EditEntry(TimesheetEntry entry, int currentUserId)
         {
             try
             {
                 var existingEntry = _dataStore.GetById(entry.Id);
                 if (existingEntry == null)
+                {
                     return ValidationResult<bool>.Failure("Timesheet entry not found");
-
-                if (existingEntry.UserId != entry.UserId)
-                    return ValidationResult<bool>.Failure("Not authorized to edit this entry");
-
+                }
+                if (existingEntry.UserId != entry.UserId || entry.UserId != currentUserId)
+                {
+                    return ValidationResult<bool>.Failure("Not authorised to add entries for other users");
+                }
                 var validation = ValidateTimesheetEntry(entry);
                 if (!validation.IsSuccess)
+                {
                     return ValidationResult<bool>.Failure(validation.ErrorMessage);
-
+                }
                 bool updated = _dataStore.Update(entry);
                 if (!updated)
+                {
                     return ValidationResult<bool>.Failure("Failed to update timesheet entry");
-
+                }
                 return ValidationResult<bool>.Success(true);
             }
             catch (Exception ex)
@@ -51,20 +60,20 @@ namespace TimesheetSystem.Services
                 return ValidationResult<bool>.Failure($"Error updating timesheet entry: {ex.Message}");
             }
         }
-        public ValidationResult<bool> DeleteEntry(int id, int userId)
+        public ValidationResult<bool> DeleteEntry(int entryId, int currentUserId)
         {
             try
             {
-                var entry = _dataStore.GetById(id);
+                var entry = _dataStore.GetById(entryId);
                 if (entry == null)
                 {
                     return ValidationResult<bool>.Failure("Timesheet entry not found");
                 }
-                if (entry.UserId != userId)
+                if (entry.UserId != currentUserId)
                 {
-                    return ValidationResult<bool>.Failure("Not authorized to delete this entry.");
+                    return ValidationResult<bool>.Failure("Not authorised to delete entries for other users");
                 }
-                _dataStore.Delete(id);
+                _dataStore.Delete(entryId);
                 return ValidationResult<bool>.Success(true);
             }
             catch (Exception ex)
