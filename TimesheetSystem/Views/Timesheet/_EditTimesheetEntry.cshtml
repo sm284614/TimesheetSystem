@@ -6,7 +6,8 @@
     <div class="card-body">
         <form asp-controller="Timesheet"
               asp-action="@(Model.TimesheetEntry.Id > 0 ? "EditEntry" : "AddEntry")"
-              method="post">
+              method="post"
+              novalidate>
 
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
@@ -20,21 +21,22 @@
                 <label asp-for="TimesheetEntry.ProjectId" class="form-label"></label>
                 <select asp-for="TimesheetEntry.ProjectId"
                         class="form-select"
+                        required
                         asp-items="@(new SelectList(Model.TimesheetEntry.AvailableProjects, "Id", "Name"))">
-                    <option value="">Select Project:</option>
+                    <option value="0">Select Project:</option>
                 </select>
                 <span asp-validation-for="TimesheetEntry.ProjectId" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
                 <label asp-for="TimesheetEntry.Date" class="form-label"></label>
-                <input asp-for="TimesheetEntry.Date" type="date" class="form-control" />
+                <input asp-for="TimesheetEntry.Date" type="date" class="form-control" required max="@DateTime.Today.ToString("yyyy-MM-dd")" />
                 <span asp-validation-for="TimesheetEntry.Date" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
                 <label asp-for="TimesheetEntry.Hours" class="form-label"></label>
-                <input asp-for="TimesheetEntry.Hours" type="number" step="0.1" min="0.1" max="24" class="form-control" />
+                <input asp-for="TimesheetEntry.Hours" type="number" step="0.05" min="0.05" max="24" class="form-control" />
                 <span asp-validation-for="TimesheetEntry.Hours" class="text-danger"></span>
             </div>
 
