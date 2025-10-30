@@ -1,3 +1,17 @@
-﻿<div>
-	User selection
+﻿@model TimesheetSystem.ViewModels.WeeklyTimesheetViewModel
+@* partial view for user selection to simulate having id of logged in user*@
+<div>
+	<form method="get" asp-controller="Timesheet" asp-action="Index">
+		<div class="form-group">            
+            <select name="userId" id="userId" class="form-select" onchange="this.form.submit()">
+                <option value="">Select User:</option>
+                @foreach (var user in Model.AvailableUsers)
+                {
+                    <option value="@user.Id" selected="@(user.Id == Model.SelectedUserId)">
+                        @user.Name
+                    </option>
+                }
+            </select>
+		</div>
+	</form>
 </div>
