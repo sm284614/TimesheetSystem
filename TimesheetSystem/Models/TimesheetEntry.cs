@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TimesheetSystem.Services;
 
 namespace TimesheetSystem.Models
 {
@@ -26,5 +27,10 @@ namespace TimesheetSystem.Models
         [Display(Name = "Description (Optional)")]
         [StringLength(255, ErrorMessage = "Description cannot exceed 255 characters")]
         public string Description { get; set; } = "";
+        public List<Project> AvailableProjects { get; set; } = []; // Initialize to avoid null
+        public TimesheetEntry()
+        {
+            Date = DateTime.Today;
+        }
     }
 }

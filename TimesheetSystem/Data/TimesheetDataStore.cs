@@ -16,9 +16,7 @@ namespace TimesheetSystem.Data
 
             // SELECT * AS project FROM userProjects JOIN Projects P ON userProjects.ProjectId = P.Id WHERE userProjects.UserId = userId
         }
-
         public List<TimesheetEntry> TimesheetEntries = [];
-
         public int Add(TimesheetEntry entry)
         {
             entry.Id = _nextId++;
@@ -70,7 +68,5 @@ namespace TimesheetSystem.Data
                 e.ProjectId == projectId &&
                 e.Date == date);
         }
-
-
     }
 }

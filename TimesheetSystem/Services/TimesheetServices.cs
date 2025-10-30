@@ -27,7 +27,7 @@ namespace TimesheetSystem.Services
             if (project == null)
                 return ValidationResult<int>.Failure("Project not found");
 
-            // check project assigned to user
+            // check project is assigned to user
             var userProjects = _dataStore.UserProjects(entry.UserId);
             if (!userProjects.Any(p => p.Id == entry.ProjectId))
                 return ValidationResult<int>.Failure("Project is not assigned to the user");
@@ -58,7 +58,7 @@ namespace TimesheetSystem.Services
             var user = _userServices.GetUserById(userId);
             if (user == null)
             {
-                return Enumerable.Empty<TimesheetEntry>();
+                return [];
             }
             return _dataStore.GetByUserAndWeek(userId, weekStart);
         }

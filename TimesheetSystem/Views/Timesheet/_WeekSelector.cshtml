@@ -1,4 +1,4 @@
-﻿@model TimesheetSystem.ViewModels.WeeklyTimesheetViewModel
+﻿@model TimesheetSystem.ViewModels.TimesheetNavigationViewModel
 <div>
 	@* week selector: simpler than a calendar control for moving around weeks; would not work well for long timescales*@
 	<div class="form-group">
@@ -18,17 +18,3 @@
 		</div>
 	</div>
 </div>
-
-@if (Model.SelectedUserId > 0)
-{
-	<div class="row mb-3">
-		<div class="col-md-12">
-			<a asp-controller="Timesheet" asp-action="Add"
-			   asp-route-userId="@Model.SelectedUserId"
-			   asp-route-weekStart="@Model.WeekStartDate.ToString("yyyy-MM-dd")"
-			   class="btn btn-primary">
-				Add New Entry
-			</a>
-		</div>
-	</div>
-}

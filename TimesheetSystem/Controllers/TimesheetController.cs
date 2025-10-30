@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TimesheetSystem.Common;
 using TimesheetSystem.Data;
+using TimesheetSystem.Models;
 using TimesheetSystem.Services;
 using TimesheetSystem.ViewModels;
 
@@ -24,19 +25,21 @@ namespace TimesheetSystem.Controllers
 
             var viewModel = new WeeklyTimesheetViewModel
             {
-                SelectedUserId = selectedUserId,
-                WeekStartDate = selectedWeekStart,
-                AvailableUsers = _userServices.GetAllUsers().ToList()
+                NavigationData = new TimesheetNavigationViewModel
+                {
+                    SelectedUserId = selectedUserId,
+                    WeekStartDate = selectedWeekStart,
+                    AvailableUsers = _userServices.GetAllUsers().ToList()
+                },
             };
-            // Only load entries if a user is selected
+            // Only load entries or calculate totals if a user is selected 
             if (selectedUserId > 0)
             {
+                //all user entries
                 viewModel.Entries = _timesheetServices.GetEntriesForUserAndWeek(selectedUserId, selectedWeekStart).ToList();
-
                 // Calculate project totals
                 var projectHours = _timesheetServices.GetTotalHoursPerProject(selectedUserId, selectedWeekStart);
                 var projects = _projectServices.GetAllProjects().ToList();
-
                 viewModel.ProjectTotals = projectHours.Select(ph => new ProjectHoursViewModel
                 {
                     ProjectId = ph.Key,
@@ -46,13 +49,33 @@ namespace TimesheetSystem.Controllers
             }
             return View(viewModel);
         }
-        public IActionResult Create(int? userId, DateTime? weekStart)
+        public IActionResult Add(int? userId, DateTime? weekStart)
         {
-            var viewModel = new TimesheetEntryViewModel
+            var selectedWeekStart = weekStart ?? DateHelper.GetMondayOfWeek(DateTime.Today); //weekstart should already be Monday!
+            var selectedUserId = userId ?? 0;
+            var projects = _projectServices.GetProjectsByUserId(selectedUserId) ?? Enumerable.Empty<Project>();
+            var viewModel = new TimesheetEntryFormViewModel
             {
-
+                NavigationData = new TimesheetNavigationViewModel
+                {
+                    SelectedUserId = selectedUserId,
+                    WeekStartDate = selectedWeekStart,
+                    AvailableUsers = _userServices.GetAllUsers().ToList()
+                },
+                TimesheetEntry = new TimesheetEntry()
+                {
+                    UserId = selectedUserId,
+                    Date = selectedWeekStart, 
+                    AvailableProjects = projects.ToList() ,
+                }
             };
+
             return View(viewModel);
+        }
+        public IActionResult Edit(int? userId, int? timesheetEntryId)
+        {
+
+            return View();
         }
         public IActionResult ProjectTotals()
         {
