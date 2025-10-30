@@ -60,12 +60,5 @@ namespace TimesheetSystem.Data
                 .OrderBy(e => e.Date)
                 .ToList();
         }
-        public bool ExistsForUserProjectDate(int userId, int projectId, DateTime date)
-        {
-            return TimesheetEntries.Any(e =>
-                e.UserId == userId &&
-                e.ProjectId == projectId &&
-                e.Date == date);
-        }
     }
 }

@@ -12,6 +12,5 @@ namespace TimesheetSystem.Data
         int Add(TimesheetEntry entry);
         bool Update(TimesheetEntry entry);
         bool Delete(int id);
-        bool ExistsForUserProjectDate(int userId, int projectId, DateTime date);
     }
 }
