@@ -18,17 +18,24 @@ namespace TimesheetSystem.Services
         }
         public ValidationResult<int> AddEntry(TimesheetEntry entry, int currentUserId)
         {
-            if (entry.UserId != currentUserId)
+            try
             {
-                return ValidationResult<int>.Failure("Not authorised to add entries for other users");
+                if (entry.UserId != currentUserId)
+                {
+                    return ValidationResult<int>.Failure("Not authorised to add entries for other users");
+                }
+                var validation = ValidateTimesheetEntry(entry);
+                if (!validation.IsSuccess)
+                {
+                    return ValidationResult<int>.Failure(validation.ErrorMessage);
+                }
+                var newId = _dataStore.Add(entry);
+                return ValidationResult<int>.Success(newId);
             }
-            var validation = ValidateTimesheetEntry(entry);
-            if (!validation.IsSuccess)
+            catch (Exception ex)
             {
-                return ValidationResult<int>.Failure(validation.ErrorMessage);
+                return ValidationResult<int>.Failure($"Error adding timesheet entry: {ex.Message}");
             }
-            var newId = _dataStore.Add(entry);
-            return ValidationResult<int>.Success(newId);
         }
         public ValidationResult<bool> EditEntry(TimesheetEntry entry, int currentUserId)
         {
@@ -41,7 +48,7 @@ namespace TimesheetSystem.Services
                 }
                 if (existingEntry.UserId != entry.UserId || entry.UserId != currentUserId)
                 {
-                    return ValidationResult<bool>.Failure("Not authorised to add entries for other users");
+                    return ValidationResult<bool>.Failure("Not authorised to edit entries for other users");
                 }
                 var validation = ValidateTimesheetEntry(entry);
                 if (!validation.IsSuccess)

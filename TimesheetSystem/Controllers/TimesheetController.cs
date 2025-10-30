@@ -73,25 +73,25 @@ namespace TimesheetSystem.Controllers
             return View(viewModel);
         }
         [HttpPost]
-        public IActionResult AddEntry(TimesheetEntryFormViewModel entry)
+        public IActionResult AddEntry(TimesheetEntryFormViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
-                RepopulateFormData(entry);
-                return View("Add", entry);
+                RepopulateFormData(viewModel);
+                return View("Add", viewModel);
             }
-            var result = _timesheetServices.AddEntry(entry.TimesheetEntry);
+            var result = _timesheetServices.AddEntry(viewModel.TimesheetEntry, viewModel.NavigationData.SelectedUserId);
             if (!result.IsSuccess)
             {
-                RepopulateFormData(entry);
+                RepopulateFormData(viewModel);
                 TempData["Error"] = result.ErrorMessage;
-                return View("Add", entry);
+                return View("Add", viewModel);
             }
             TempData["Success"] = "Timesheet entry added successfully.";
             // redirect back to index
             return RedirectToAction(
                 "Index",
-                new { userId = entry.NavigationData.SelectedUserId, weekStart = entry.NavigationData.WeekStartDate.ToString("yyyy-MM-dd") }
+                new { userId = viewModel.NavigationData.SelectedUserId, weekStart = viewModel.NavigationData.WeekStartDate.ToString("yyyy-MM-dd") }
             );
         }
         public IActionResult Edit(int timesheetEntryId, int? userId, DateTime? weekStart)
@@ -134,7 +134,7 @@ namespace TimesheetSystem.Controllers
                 return View("Add", viewModel);
             }
 
-            var result = _timesheetServices.EditEntry(viewModel.TimesheetEntry);
+            var result = _timesheetServices.EditEntry(viewModel.TimesheetEntry, viewModel.NavigationData.SelectedUserId);
 
             if (!result.IsSuccess)
             {
@@ -183,7 +183,6 @@ namespace TimesheetSystem.Controllers
         {
             return View();
         }
-
         private void RepopulateFormData(TimesheetEntryFormViewModel viewModel)
         {
             viewModel.TimesheetEntry.AvailableProjects = _projectServices.GetProjectsByUserId(viewModel.TimesheetEntry.UserId).ToList();
