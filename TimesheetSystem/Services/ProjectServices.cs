@@ -14,12 +14,10 @@ namespace TimesheetSystem.Services
         {
             return _dataStore.Projects;
         }
-
         public Project? GetProjectById(int projectId)
         {
             return _dataStore.Projects.FirstOrDefault(p => p.Id == projectId);
         }
-
         public IEnumerable<Project> GetProjectsByUserId(int userId)
         {
            return _dataStore.UserProjects(userId);

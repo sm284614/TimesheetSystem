@@ -9,10 +9,12 @@ namespace TimesheetSystem.Data
         public IEnumerable<Project> Projects => TestData.Projects;
         public IEnumerable<Project> UserProjects(int userId)
         {
-            return from up in TestData.UserProjects
-                   join p in TestData.Projects on up.ProjectId equals p.Id
-                   where up.UserId == userId
-                   select p;
+            return from userProjects in TestData.UserProjects
+                   join project in TestData.Projects on userProjects.ProjectId equals project.Id
+                   where userProjects.UserId == userId
+                   select project;
+
+            // SELECT * AS project FROM userProjects JOIN Projects P ON userProjects.ProjectId = P.Id WHERE userProjects.UserId = userId
         }
 
         public List<TimesheetEntry> TimesheetEntries = [];
@@ -53,7 +55,13 @@ namespace TimesheetSystem.Data
         }
         public IEnumerable<TimesheetEntry> GetByUserAndWeek(int userId, DateTime weekStart)
         {
-            throw new NotImplementedException();
+            var weekEnd = weekStart.AddDays(7);
+            return TimesheetEntries.Where(e =>
+                e.UserId == userId &&
+                e.Date >= weekStart &&
+                e.Date < weekEnd)
+                .OrderBy(e => e.Date)
+                .ToList();
         }
         public bool ExistsForUserProjectDate(int userId, int projectId, DateTime date)
         {

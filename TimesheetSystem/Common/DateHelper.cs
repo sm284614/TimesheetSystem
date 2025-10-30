@@ -9,6 +9,9 @@
         /// <returns></returns>
         public static DateTime GetMondayOfWeek(DateTime date)
         {
+            // logic check: DayofWeek enum has Sunday = 0
+            // here: e.g. Thurs = 3 => (7 + (3 - 1)) % 7 = 2
+            // date + (-1 * 2) is 2 days back from Thurs (3) to Mon (1)
             int diff = (7 + (date.DayOfWeek - DayOfWeek.Monday)) % 7;
             return date.AddDays(-1 * diff).Date;
         }
@@ -20,11 +23,9 @@
         /// <returns>A tuple containing the start date (Monday) and end date (Sunday) of the week.</returns>
         public static (DateTime startDate, DateTime endDate) GetWeekRange(DateTime date)
         {
-            // Calculate week range (Monday to Sunday)
-            int daysFromMonday = ((int)date.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
-            DateTime monday = date.Date.AddDays(-daysFromMonday);
+            //find monday, add 6, ship it off
+            DateTime monday = GetMondayOfWeek(date);
             DateTime sunday = monday.AddDays(6);
-
             return (monday, sunday);
         }
     }
