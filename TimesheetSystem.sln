@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimesheetSystem", "TimesheetSystem\TimesheetSystem.csproj", "{FADB4E17-4F8D-48D7-A738-3C9C0B4AA31E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{1DB7EC99-7FF5-4718-8AA1-9F21029B01AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimesheetSystem.UnitTests", "UnitTests\TimesheetSystem.UnitTests.csproj", "{1DB7EC99-7FF5-4718-8AA1-9F21029B01AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
