@@ -9,3 +9,7 @@ invalid userid
 invalid projectid
 non-matching userid/projectid
 non-matching userid
+
+add/edit/delete exceptions thrown
+
+null references for timesheetentry?

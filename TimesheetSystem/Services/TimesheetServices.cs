@@ -22,7 +22,7 @@ namespace TimesheetSystem.Services
             {
                 if (entry.UserId != currentUserId)
                 {
-                    return ValidationResult<int>.Failure("Not authorised to add entries for other users");
+                    return ValidationResult<int>.Failure(ErrorMessages.UnauthorisedAdd);
                 }
                 var validation = ValidateTimesheetEntry(entry);
                 if (!validation.IsSuccess)
@@ -44,11 +44,11 @@ namespace TimesheetSystem.Services
                 var existingEntry = _dataStore.GetById(entry.Id);
                 if (existingEntry == null)
                 {
-                    return ValidationResult<bool>.Failure("Timesheet entry not found");
+                    return ValidationResult<bool>.Failure(ErrorMessages.TimesheetEntryNotFound);
                 }
                 if (existingEntry.UserId != entry.UserId || entry.UserId != currentUserId)
                 {
-                    return ValidationResult<bool>.Failure("Not authorised to edit entries for other users");
+                    return ValidationResult<bool>.Failure(ErrorMessages.UnauthorisedEdit);
                 }
                 var validation = ValidateTimesheetEntry(entry);
                 if (!validation.IsSuccess)
@@ -74,11 +74,11 @@ namespace TimesheetSystem.Services
                 var entry = _dataStore.GetById(entryId);
                 if (entry == null)
                 {
-                    return ValidationResult<bool>.Failure("Timesheet entry not found");
+                    return ValidationResult<bool>.Failure(ErrorMessages.TimesheetEntryNotFound);
                 }
                 if (entry.UserId != currentUserId)
                 {
-                    return ValidationResult<bool>.Failure("Not authorised to delete entries for other users");
+                    return ValidationResult<bool>.Failure(ErrorMessages.UnauthorisedDelete);
                 }
                 _dataStore.Delete(entryId);
                 return ValidationResult<bool>.Success(true);
@@ -117,25 +117,25 @@ namespace TimesheetSystem.Services
             // Validate user exists
             var user = _userServices.GetUserById(entry.UserId);
             if (user == null)
-                return ValidationResult<bool>.Failure("User not found");
+                return ValidationResult<bool>.Failure(ErrorMessages.UserNotFound);
 
             // Validate project exists
             var project = _projectServices.GetProjectById(entry.ProjectId);
             if (project == null)
-                return ValidationResult<bool>.Failure("Project not found");
+                return ValidationResult<bool>.Failure(ErrorMessages.ProjectNotFound);
 
             // Check project is assigned to user
             var userProjects = _dataStore.UserProjects(entry.UserId);
             if (!userProjects.Any(p => p.Id == entry.ProjectId))
-                return ValidationResult<bool>.Failure("Project is not assigned to the user");
+                return ValidationResult<bool>.Failure(ErrorMessages.ProjectNotAssignedToUser);
 
             // Validate date
             if (entry.Date > DateTime.Today)
-                return ValidationResult<bool>.Failure("Date must not be in the future");
+                return ValidationResult<bool>.Failure(ErrorMessages.DateMustNotBeInTheFuture);
 
             // Validate hours range
             if (entry.Hours <= 0 || entry.Hours > 24)
-                return ValidationResult<bool>.Failure("Hours must be between 0.1 and 24.0");
+                return ValidationResult<bool>.Failure(ErrorMessages.InvalidHours);
 
             return ValidationResult<bool>.Success(true);
         }

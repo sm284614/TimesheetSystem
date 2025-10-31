@@ -1,9 +1,10 @@
 ﻿using Moq;
-using TimesheetSystem.Common;
+using static TimesheetSystem.Common.ErrorMessages;
 using TimesheetSystem.Data;
 using TimesheetSystem.Models;
 using TimesheetSystem.Services;
 using Xunit;
+using TimesheetSystem.Common;
 
 namespace TimesheetSystem.UnitTests
 {
@@ -76,13 +77,14 @@ namespace TimesheetSystem.UnitTests
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal("Not authorised to add entries for other users", result.ErrorMessage);
+            Assert.Equal(ErrorMessages.UnauthorisedAdd, result.ErrorMessage);
         }   
 
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        [InlineData(24.1)]
+        [InlineData(0.01)]
+        [InlineData(24.05)]
         [InlineData(100)]
         public void AddEntry_InvalidHours_ReturnsFailure(decimal hours)
         {
@@ -105,7 +107,7 @@ namespace TimesheetSystem.UnitTests
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal("Hours must be between 0.1 and 24.0", result.ErrorMessage);
+            Assert.Equal(ErrorMessages.InvalidHours, result.ErrorMessage);
         }
 
         [Fact]
@@ -139,12 +141,13 @@ namespace TimesheetSystem.UnitTests
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal("Not authorised to edit entries for other users", result.ErrorMessage);
+            Assert.Equal(ErrorMessages.UnauthorisedEdit, result.ErrorMessage);
         }
 
         [Fact]
         public void EditEntry_UserTriesToChangeEntryOwnership_ReturnsFailure()
         {
+
             // Arrange
             var currentUserId = 1;  // Logged in as user 1
             var existingEntry = new TimesheetEntry
@@ -173,7 +176,7 @@ namespace TimesheetSystem.UnitTests
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal("Not authorised to edit entries for other users", result.ErrorMessage);
+            Assert.Equal(ErrorMessages.UnauthorisedEdit, result.ErrorMessage);
         }
 
     }
