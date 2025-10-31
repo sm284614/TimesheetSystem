@@ -2,15 +2,13 @@
 @{
 	ViewData["Title"] = "Edit timesheet entry";
 }
-<div class="container col-md-8 offset-md-2">
+<div class="container p-4">
 	<div class="row mb-3">
 		@await Html.PartialAsync("_UserSelector", Model.NavigationData)
-		<div class="row mb-4">
-			<div class="col-md-12">
-				<h2>Weekly Timesheets</h2>
-			</div>
-		</div>
-		@await Html.PartialAsync("_WeekSelector", Model.NavigationData)
+		@if (Model.NavigationData.SelectedUserId > 0)
+		{
+			@await Html.PartialAsync("_TitleBar", Model.NavigationData)
+		}
 	</div>
 
 	@if (Model.NavigationData.SelectedUserId > 0)

@@ -4,29 +4,125 @@ html {
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+    color: var(--bs-secondary-color);
+    text-align: end;
 }
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    text-align: start;
 }
+
+.page-container {
+    width: 50%;
+    margin: 2rem auto;
+    border-color: #163A6C;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.page-container .cmap-page-header {
+    background-color: #163A6C;
+    color: #FDFDFF;
+    font-weight: 700;
+    border-radius: 0;
+    margin-bottom: 0 !important;
+}
+
+.page-container .navbar-brand,
+.page-container .nav-link {
+    color: #FDFDFF !important;
+    font-weight: 700;
+}
+
+    .page-container .nav-link:hover {
+        color: #e0e0e0 !important;
+    }
+
+.page-container .navbar-toggler-icon {
+    filter: brightness(0) invert(1);
+}
+
+.body-container {
+    background-color: #eeeeff;
+}
+
+/* Completely remove border radius and card border */
+.timesheet-card,
+.timesheet-card .card-header,
+.timesheet-card .card-body {
+    padding: 0;
+    border-radius: 0 !important;
+    border: none !important;
+    margin-bottom: 0;
+}
+
+    /* Make the header stretch edge-to-edge and full blue */
+    .timesheet-card .card-header {
+        background-color: #327bc0; /* your chosen dark blue */
+        color: #fff;
+        padding: 0.75rem 1.25rem;
+    }
+
+        /* Vertically center the title text */
+        .timesheet-card .card-header h3 {
+            margin: 0;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+        }
+
+    /* Ensure no internal spacing fights against the edges */
+    .timesheet-card .card-header,
+    .timesheet-card .card-body {
+        border-left: none;
+        border-right: none;
+    }
+
+    /* Give the outline button proper contrast */
+    .timesheet-card .btn-outline-light {
+        border-color: #fff;
+        color: #fff;
+    }
+
+        .timesheet-card .btn-outline-light:hover {
+            background-color: #fff;
+            color: #163A6C;
+        }
+    .timesheet-card .table {
+        margin-bottom: 0;
+    }
+
+    .timesheet-card .description-cell {
+        max-width: 0; /* Forces text-overflow to work with table cells */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+        /* Optional: Show full text on hover */
+        .timesheet-card .description-cell:hover {
+            white-space: normal;
+            overflow: visible;
+        }

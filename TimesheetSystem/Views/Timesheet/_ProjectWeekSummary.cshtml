@@ -1,9 +1,9 @@
 ﻿@model TimesheetSystem.ViewModels.WeeklyTimesheetViewModel
-<div class="card">
-	<div class="card-header">
-		<h3>Project hours this week</h3>
+<div class="card timesheet-card border-0">
+	<div class="card-header d-flex justify-content-between align-items-center">
+		<h4 class="mb-0">Project hours this week</h4>
 	</div>
-	<div class="card-body">
+	<div class="card-body mb-0">
 		<table class="table table-striped table-hover ">
 			<colgroup>
 				<col style="width: 80%;">
@@ -12,7 +12,7 @@
 			<thead>
 				<tr>
 					<th>Project</th>
-					<th>Hours</th>
+					<th class="text-end">Hours</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -20,7 +20,7 @@
 				{
 					<tr>
 						<td>@projectLog.ProjectName</td>
-						<td>@projectLog.TotalHours.ToString("F2")</td>
+						<td class="text-end">@projectLog.TotalHours.ToString("F2")</td>
 					</tr>
 				}
 				@if (Model.Entries.Count == 0)

@@ -27,15 +27,9 @@ namespace TimesheetSystem.Controllers
             ViewBag.DateFormat = DateFormat;
             var selectedWeekStart = weekStart ?? DateHelper.GetMondayOfWeek(DateTime.Today);
             var selectedUserId = userId ?? 0;
-
             var viewModel = new WeeklyTimesheetViewModel
             {
-                NavigationData = new TimesheetNavigationViewModel
-                {
-                    SelectedUserId = selectedUserId,
-                    WeekStartDate = selectedWeekStart,
-                    AvailableUsers = _userServices.GetAllUsers().ToList()
-                },
+                NavigationData = CreateDefaultNavigationData(selectedUserId, selectedWeekStart),
             };
             // Only load entries or calculate totals if a user is selected 
             if (selectedUserId > 0)
@@ -61,12 +55,7 @@ namespace TimesheetSystem.Controllers
             var projects = _projectServices.GetProjectsByUserId(selectedUserId) ?? [];
             var viewModel = new TimesheetEntryFormViewModel
             {
-                NavigationData = new TimesheetNavigationViewModel
-                {
-                    SelectedUserId = selectedUserId,
-                    WeekStartDate = selectedWeekStart,
-                    AvailableUsers = _userServices.GetAllUsers().ToList()
-                },
+                NavigationData = CreateDefaultNavigationData(selectedUserId, selectedWeekStart),
                 TimesheetEntry = new TimesheetEntry()
                 {
                     UserId = selectedUserId,
@@ -117,14 +106,9 @@ namespace TimesheetSystem.Controllers
 
             var viewModel = new TimesheetEntryFormViewModel
             {
-                NavigationData = new TimesheetNavigationViewModel
-                {
-                    SelectedUserId = selectedUserId,
-                    WeekStartDate = selectedWeekStart,
-                    AvailableUsers = _userServices.GetAllUsers().ToList()
-                },
+                NavigationData = CreateDefaultNavigationData(selectedUserId, selectedWeekStart),
                 TimesheetEntry = existingEntry
-            };
+            }; ;
 
             viewModel.TimesheetEntry.AvailableProjects = projects.ToList();
 
@@ -192,6 +176,17 @@ namespace TimesheetSystem.Controllers
         {
             viewModel.TimesheetEntry.AvailableProjects = _projectServices.GetProjectsByUserId(viewModel.TimesheetEntry.UserId).ToList();
             viewModel.NavigationData.AvailableUsers = _userServices.GetAllUsers().ToList();
+        }
+        private TimesheetNavigationViewModel CreateDefaultNavigationData(int selectedUserId, DateTime selectedWeekStart)
+        {
+            var availableUsers = _userServices.GetAllUsers().ToList();
+            return new TimesheetNavigationViewModel
+            {
+                SelectedUserId = selectedUserId,
+                WeekStartDate = selectedWeekStart,
+                AvailableUsers = availableUsers,
+                SelectedUserName = availableUsers.FirstOrDefault(u => u.Id == selectedUserId)?.Name ?? "Unknown User"
+            };
         }
     }
 }
