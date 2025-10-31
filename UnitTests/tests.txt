@@ -10,9 +10,24 @@ non-matching userid/projectid
 non-matching userid
 add/edit/delete exceptions thrown?
 null references for timesheetentry?
-
+important things:
+validation (esp. hour/date boundaries), CRUD ops, 'security'
+        // test categories
+        // * new timesheet entry data validity
+        //    * no/invalid userid
+        //    * no/invalid projectid
+        //    * non-matching userid/projectid
+        //    * invalid date (format, future)
+        //    * invalid hours (range)
+        //    * description?
+        // * existing timesheet edit data validity
+        // * timesheet seleting
+        // * listing of user timesheet entries per week
+        //    * attempt to view (add/edit/delete) other user entries
+        // * listing with project hours for user timesheet entries per week
+out-of-context for this project:
+	data access layer tests
 Planned tests:
-
 Add Entry Tests:
 	AddEntry_ValidEntry_ReturnsSuccess
 	AddEntry_UnauthorizedUser_ReturnsFailure
@@ -26,7 +41,6 @@ Add Entry Tests:
 	AddEntry_ValidHoursBoundary_ReturnsSuccess
 	AddEntry_DescriptionTooLong_ReturnsFailure
 	AddEntry_EmptyDescription_ReturnsSuccess
-
 Edit Entry Tests:
 	EditEntry_UserTriesToEditAnotherUsersEntry_ReturnsFailure
 	EditEntry_UserTriesToChangeEntryOwnership_ReturnsFailure
@@ -38,27 +52,21 @@ Edit Entry Tests:
 	EditEntry_ProjectNotAssignedToUser_ReturnsFailure
 	EditEntry_FutureDate_ReturnsFailure
 	EditEntry_ChangeToValidProject_ReturnsSuccess
-
 Delete Entry Tests:
 	DeleteEntry_ValidDelete_ReturnsSuccess
 	DeleteEntry_EntryDoesNotExist_ReturnsFailure
 	DeleteEntry_UserTriesToDeleteAnotherUsersEntry_ReturnsFailure
-
 Get Entry Tests
 	GetEntryById_EntryExists_ReturnsEntry
 	GetEntryById_EntryDoesNotExist_ReturnsNull
-
 Get Entries for User and Week Tests
-
-GetEntriesForUserAndWeek_ValidUser_ReturnsEntries
-GetEntriesForUserAndWeek_UserDoesNotExist_ReturnsEmptyList
-GetEntriesForUserAndWeek_NoEntriesInWeek_ReturnsEmptyList
-GetEntriesForUserAndWeek_MultipleEntries_ReturnsOnlyWeekEntries
-GetEntriesForUserAndWeek_EntriesOrderedByDate_ReturnsCorrectOrder
-
+	GetEntriesForUserAndWeek_ValidUser_ReturnsEntries
+	GetEntriesForUserAndWeek_UserDoesNotExist_ReturnsEmptyList
+	GetEntriesForUserAndWeek_NoEntriesInWeek_ReturnsEmptyList
+	GetEntriesForUserAndWeek_MultipleEntries_ReturnsOnlyWeekEntries
+	GetEntriesForUserAndWeek_EntriesOrderedByDate_ReturnsCorrectOrder
 Get Total Hours Per Project Tests
-
-GetTotalHoursPerProject_SingleProject_ReturnsCorrectTotal
-GetTotalHoursPerProject_MultipleProjects_ReturnsCorrectTotals
-GetTotalHoursPerProject_NoEntries_ReturnsEmptyDictionary
-GetTotalHoursPerProject_UserDoesNotExist_ReturnsEmptyDictionary
+	GetTotalHoursPerProject_SingleProject_ReturnsCorrectTotal
+	GetTotalHoursPerProject_MultipleProjects_ReturnsCorrectTotals
+	GetTotalHoursPerProject_NoEntries_ReturnsEmptyDictionary
+	GetTotalHoursPerProject_UserDoesNotExist_ReturnsEmptyDictionarys

@@ -134,8 +134,12 @@ namespace TimesheetSystem.Services
                 return ValidationResult<bool>.Failure(ErrorMessages.DateMustNotBeInTheFuture);
 
             // Validate hours range
-            if (entry.Hours <= 0 || entry.Hours > 24)
+            if (entry.Hours < 0.05m || entry.Hours > 24)
                 return ValidationResult<bool>.Failure(ErrorMessages.InvalidHours);
+
+            // Validate description length
+            if (entry.Description != null && entry.Description.Length > 255)
+                return ValidationResult<bool>.Failure(ErrorMessages.DescriptionExceedsMaximumLength);
 
             return ValidationResult<bool>.Success(true);
         }
