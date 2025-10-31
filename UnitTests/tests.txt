@@ -1,15 +1,64 @@
-Form: 
+Initial plan:
 all valid
 all valid, but no description
 date in future
 no project selected
 invalid hours: -1, 0, 0.00000000001, 0.05, 4, 24, 24.05
-
 invalid userid
 invalid projectid
 non-matching userid/projectid
 non-matching userid
-
-add/edit/delete exceptions thrown
-
+add/edit/delete exceptions thrown?
 null references for timesheetentry?
+
+Planned tests:
+
+Add Entry Tests:
+	AddEntry_ValidEntry_ReturnsSuccess
+	AddEntry_UnauthorizedUser_ReturnsFailure
+	AddEntry_InvalidHours_ReturnsFailure
+	AddEntry_UserDoesNotExist_ReturnsFailure
+	AddEntry_ProjectDoesNotExist_ReturnsFailure
+	AddEntry_ProjectNotAssignedToUser_ReturnsFailure
+	AddEntry_FutureDate_ReturnsFailure
+	AddEntry_TodayDate_ReturnsSuccess
+	AddEntry_PastDate_ReturnsSuccess
+	AddEntry_ValidHoursBoundary_ReturnsSuccess
+	AddEntry_DescriptionTooLong_ReturnsFailure
+	AddEntry_EmptyDescription_ReturnsSuccess
+
+Edit Entry Tests:
+	EditEntry_UserTriesToEditAnotherUsersEntry_ReturnsFailure
+	EditEntry_UserTriesToChangeEntryOwnership_ReturnsFailure
+	EditEntry_ValidEdit_ReturnsSuccess
+	EditEntry_EntryDoesNotExist_ReturnsFailure
+	EditEntry_InvalidHours_ReturnsFailure
+	EditEntry_UserDoesNotExist_ReturnsFailure
+	EditEntry_ProjectDoesNotExist_ReturnsFailure
+	EditEntry_ProjectNotAssignedToUser_ReturnsFailure
+	EditEntry_FutureDate_ReturnsFailure
+	EditEntry_ChangeToValidProject_ReturnsSuccess
+
+Delete Entry Tests:
+	DeleteEntry_ValidDelete_ReturnsSuccess
+	DeleteEntry_EntryDoesNotExist_ReturnsFailure
+	DeleteEntry_UserTriesToDeleteAnotherUsersEntry_ReturnsFailure
+
+Get Entry Tests
+	GetEntryById_EntryExists_ReturnsEntry
+	GetEntryById_EntryDoesNotExist_ReturnsNull
+
+Get Entries for User and Week Tests
+
+GetEntriesForUserAndWeek_ValidUser_ReturnsEntries
+GetEntriesForUserAndWeek_UserDoesNotExist_ReturnsEmptyList
+GetEntriesForUserAndWeek_NoEntriesInWeek_ReturnsEmptyList
+GetEntriesForUserAndWeek_MultipleEntries_ReturnsOnlyWeekEntries
+GetEntriesForUserAndWeek_EntriesOrderedByDate_ReturnsCorrectOrder
+
+Get Total Hours Per Project Tests
+
+GetTotalHoursPerProject_SingleProject_ReturnsCorrectTotal
+GetTotalHoursPerProject_MultipleProjects_ReturnsCorrectTotals
+GetTotalHoursPerProject_NoEntries_ReturnsEmptyDictionary
+GetTotalHoursPerProject_UserDoesNotExist_ReturnsEmptyDictionary

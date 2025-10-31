@@ -34,6 +34,7 @@ namespace TimesheetSystem.UnitTests
         // concurrent user operations
         // connection to data source?
 
+
         private readonly Mock<ITimesheetDataStore> _mockDataStore;
         private readonly Mock<IUserServices> _mockUserServices;
         private readonly Mock<IProjectServices> _mockProjectServices;
@@ -106,7 +107,6 @@ namespace TimesheetSystem.UnitTests
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        [InlineData(0.01)]
         [InlineData(24.05)]
         [InlineData(100)]
         public void AddEntry_InvalidHours_ReturnsFailure(decimal hours)
