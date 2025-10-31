@@ -34,7 +34,7 @@ namespace TimesheetSystem.Services
             }
             catch (Exception ex)
             {
-                return ValidationResult<int>.Failure($"Error adding timesheet entry: {ex.Message}");
+                return ValidationResult<int>.Failure($"{ErrorMessages.ErrorAddingTimesheetEntry} : : {ex.Message}");
             }
         }
         public ValidationResult<bool> EditEntry(TimesheetEntry entry, int currentUserId)
@@ -58,13 +58,13 @@ namespace TimesheetSystem.Services
                 bool updated = _dataStore.Update(entry);
                 if (!updated)
                 {
-                    return ValidationResult<bool>.Failure("Failed to update timesheet entry");
+                    return ValidationResult<bool>.Failure(ErrorMessages.ErrorUpdatingTimesheetEntry);
                 }
                 return ValidationResult<bool>.Success(true);
             }
             catch (Exception ex)
             {
-                return ValidationResult<bool>.Failure($"Error updating timesheet entry: {ex.Message}");
+                return ValidationResult<bool>.Failure($"{ErrorMessages.ErrorUpdatingTimesheetEntry}: {ex.Message}");
             }
         }
         public ValidationResult<bool> DeleteEntry(int entryId, int currentUserId)
@@ -85,7 +85,7 @@ namespace TimesheetSystem.Services
             }
             catch (Exception ex)
             {
-                return ValidationResult<bool>.Failure($"Error deleting timesheet entry: {ex.Message}");
+                return ValidationResult<bool>.Failure($"{ErrorMessages.ErrorDeletingTimesheetEntry}: {ex.Message}");
             }
 
         }

@@ -5,6 +5,7 @@ using TimesheetSystem.Models;
 using TimesheetSystem.Services;
 using Xunit;
 using TimesheetSystem.Common;
+using Xunit.Sdk;
 namespace TimesheetSystem.UnitTests
 {
     public class TimesheetServicesTests
@@ -12,9 +13,11 @@ namespace TimesheetSystem.UnitTests
         // note on things I'm not testing:
         // complex time issues:
         // * daylight savings clock-change days and hours worked potentially being max 23/25
-        // * validataion for timesheet entry day being in the future for server, but present for client (e.g. server is East US, client in australia)
-        // concurrent user operations
-        // connection to data source?
+        // * timezones: validataion for timesheet entry day being in the future for server, but present for client (e.g. server is East US, client in australia)
+        // * dates in the far past (we should probably set a minimum date limit somewhere?)
+        // * leapyears/days: should not affect anything because of week-based entry
+        // concurrent user operations (e.g. entry deleted between edit and save steps)
+        // connection to data source
         private readonly Mock<ITimesheetDataStore> _mockDataStore;
         private readonly Mock<IUserServices> _mockUserServices;
         private readonly Mock<IProjectServices> _mockProjectServices;
@@ -230,7 +233,7 @@ namespace TimesheetSystem.UnitTests
             Assert.True(result.IsSuccess);
         }
         [Theory]
-        [InlineData(0.01)]  // Minimum valid hours
+        [InlineData(0.05)]  // Minimum valid hours
         [InlineData(24.0)]  // Maximum valid hours
         [InlineData(1.0)]
         [InlineData(8.5)]
@@ -320,6 +323,61 @@ namespace TimesheetSystem.UnitTests
             var result = _timesheetServices.AddEntry(entry, currentUserId);
             // Assert
             Assert.True(result.IsSuccess);
+        }
+        [Theory]
+        [InlineData(0.001)]  // Less than 0.01 but greater than 0
+        [InlineData(0.009)]
+        public void AddEntry_HoursBelowMinimumButAboveZero_ReturnsFailure(decimal hours)
+        {
+            // Arrange
+            var currentUserId = 1;
+            var entry = new TimesheetEntry
+            {
+                UserId = 1,
+                ProjectId = 1,
+                Date = DateTime.Today,
+                Hours = hours  // Below minimum threshold
+            };
+            _mockUserServices.Setup(x => x.GetUserById(1)).Returns(new User(1, "Test User"));
+            _mockProjectServices.Setup(x => x.GetProjectById(1)).Returns(new Project(1, "Library"));
+            _mockDataStore.Setup(x => x.UserProjects(1)).Returns(new List<Project> { new Project(1, "Test Project") });
+            // Act
+            var result = _timesheetServices.AddEntry(entry, currentUserId);
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.Equal(ErrorMessages.InvalidHours, result.ErrorMessage);
+        }
+        [Fact]
+        public void AddEntry_NegativeProjectId_ReturnsFailure()
+        {
+            // Arrange
+            var currentUserId = 1;
+            var entry = new TimesheetEntry
+            {
+                UserId = 1,
+                ProjectId = -1,  
+                Date = DateTime.Today,
+                Hours = 8.0m
+            };
+            _mockUserServices.Setup(x => x.GetUserById(1)).Returns(new User(1, "Test User"));
+            _mockProjectServices.Setup(x => x.GetProjectById(-1)).Returns((Project?)null);  // Negative IDs won't exist!
+            // Act
+            var result = _timesheetServices.AddEntry(entry, currentUserId);
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.Equal(ErrorMessages.ProjectNotFound, result.ErrorMessage);
+        }
+        [Fact]
+        public void AddEntry_NullEntry_ReturnsFailure()
+        {
+            // Arrange
+            var currentUserId = 1;
+            TimesheetEntry? entry = null;
+            // Act
+            var result = _timesheetServices.AddEntry(entry!, currentUserId);
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.Contains(ErrorMessages.ErrorAddingTimesheetEntry, result.ErrorMessage); //probably object reference message
         }
         #endregion
         #region Edit Entry Tests
@@ -632,6 +690,18 @@ namespace TimesheetSystem.UnitTests
             Assert.True(result.IsSuccess);
             Assert.True(result.Value);
         }
+        [Fact]
+        public void EditEntry_NullEntry_ReturnsFailure()
+        {
+            // Arrange
+            var currentUserId = 1;
+            TimesheetEntry? entry = null;
+            // Act
+            var result = _timesheetServices.EditEntry(entry!, currentUserId);
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.Contains(ErrorMessages.ErrorUpdatingTimesheetEntry, result.ErrorMessage);
+        }
         #endregion
         #region Delete Entry Tests
         [Fact]
@@ -815,7 +885,7 @@ namespace TimesheetSystem.UnitTests
             Assert.Equal(3, result.Count);
             Assert.True(result[0].Date <= result[1].Date);
             Assert.True(result[1].Date <= result[2].Date);
-        }
+        }     
         #endregion
         #region Get Total Hours Per Project Tests
         [Fact]
@@ -890,6 +960,34 @@ namespace TimesheetSystem.UnitTests
             // Assert
             Assert.NotNull(result);
             Assert.Empty(result);
+        }
+        [Theory]
+        [InlineData(7.333)]
+        [InlineData(8.666)]
+        [InlineData(5.999)]
+        public void GetTotalHoursPerProject_DecimalRounding_MaintainsPrecision(decimal hours)
+        {
+            // Arrange
+            var userId = 1;
+            var weekStart = new DateTime(2024, 1, 1);
+            var entries = new List<TimesheetEntry>
+            {
+                new TimesheetEntry { Id = 1, UserId = 1, ProjectId = 1, Date = weekStart, Hours = hours },
+                new TimesheetEntry { Id = 2, UserId = 1, ProjectId = 1, Date = weekStart.AddDays(1), Hours = hours },
+                new TimesheetEntry { Id = 3, UserId = 1, ProjectId = 1, Date = weekStart.AddDays(2), Hours = hours }
+            };
+            _mockUserServices.Setup(x => x.GetUserById(1)).Returns(new User(1, "Test User"));
+            _mockDataStore.Setup(x => x.GetByUserAndWeek(userId, weekStart)).Returns(entries);
+            // Act
+            var result = _timesheetServices.GetTotalHoursPerProject(userId, weekStart);
+            // Assert
+            Assert.NotNull(result);
+            Assert.Single(result);
+            // Calculate expected total
+            var expectedTotal = hours + hours + hours;  // or hours * 3
+            // Verify precision is maintained (decimal type should handle this correctly)
+            Assert.Equal(expectedTotal, result[1]);
+            Assert.Equal(hours * 3, result[1]);
         }
         #endregion
     }

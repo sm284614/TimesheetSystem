@@ -16,7 +16,9 @@
         public const string InvalidHours = "Hours must be between 0.05 and 23.0";
         public const string DescriptionExceedsMaximumLength = "Description cannot exceed 255 characters";
         public const string DatabaseConnectionFailed = "Database connection failed";
-
+        public const string ErrorAddingTimesheetEntry = "Error adding timesheet entry";
+        public const string ErrorUpdatingTimesheetEntry = "Error updating timesheet entry";
+        public const string ErrorDeletingTimesheetEntry = "Error deleting timesheet entry";
 
     }
 }
