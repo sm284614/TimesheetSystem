@@ -24,6 +24,7 @@ namespace TimesheetSystem.Controllers
         }
         public IActionResult Index(int? userId, DateTime? weekStart)
         {
+            ViewBag.DateFormat = DateFormat;
             var selectedWeekStart = weekStart ?? DateHelper.GetMondayOfWeek(DateTime.Today);
             var selectedUserId = userId ?? 0;
 
@@ -157,7 +158,7 @@ namespace TimesheetSystem.Controllers
                 }
             );
         }
-        [HttpGet]
+        [HttpPost]
         public IActionResult DeleteEntry(int id, int userId, DateTime weekStart)
         {
             var result = _timesheetServices.DeleteEntry(id, userId);

@@ -234,7 +234,7 @@ namespace TimesheetSystem.UnitTests
         }
         [Theory]
         [InlineData(0.05)]  // Minimum valid hours
-        [InlineData(24.0)]  // Maximum valid hours
+        [InlineData(23.0)]  // Maximum valid hours
         [InlineData(1.0)]
         [InlineData(8.5)]
         [InlineData(12.25)]

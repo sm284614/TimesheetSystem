@@ -1,11 +1,14 @@
 ﻿@model TimesheetSystem.ViewModels.WeeklyTimesheetViewModel
+@{
+	var dateFormat = ViewBag.DateFormat as string ?? "yyyy-MM-dd";
+}
 
 <div class="card">
 	<div class="card-header d-flex justify-content-between align-items-center">
 		<h3>Timesheet Entries</h3>
 		<a asp-controller="Timesheet" asp-action="Add"
 		   asp-route-userId="@Model.NavigationData.SelectedUserId"
-		   asp-route-weekStart="@Model.NavigationData.WeekStartDate.ToString("yyyy-MM-dd")"
+		   asp-route-weekStart="@Model.NavigationData.WeekStartDate.ToString(dateFormat)"
 		   class="btn btn-primary">
 			Add New Entry
 		</a>
@@ -39,19 +42,21 @@
 							   asp-action="Edit"
 							   asp-route-timesheetEntryId="@entry.Id"
 							   asp-route-userId="@Model.NavigationData.SelectedUserId"
-							   asp-route-weekStart="@Model.NavigationData.WeekStartDate.ToString("yyyy-MM-dd")"
+							   asp-route-weekStart="@Model.NavigationData.WeekStartDate.ToString(dateFormat)"
 							   class="btn btn-sm btn-primary">
 								Edit
 							</a>
-							<a asp-controller="Timesheet"
-							   asp-action="DeleteEntry"
-							   asp-route-id="@entry.Id"
-							   asp-route-userId="@Model.NavigationData.SelectedUserId"
-							   asp-route-weekStart="@Model.NavigationData.WeekStartDate.ToString("yyyy-MM-dd")"
-							   class="btn btn-danger btn-sm"
-							   onclick="return confirm('Are you sure you want to delete this entry?');">
-								Delete
-							</a>
+							<form asp-controller="Timesheet"
+								  asp-action="DeleteEntry"
+								  asp-route-id="@entry.Id"
+								  asp-route-userId="@Model.NavigationData.SelectedUserId"
+								  asp-route-weekStart="@Model.NavigationData.WeekStartDate.ToString(dateFormat)"
+								  method="post"
+								  style="display: inline;"
+								  onsubmit="return confirm('Are you sure you want to delete this entry?');">
+								<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+							</form>
+						</td>
 					</tr>
 				}
 				@if (Model.Entries.Count == 0)
