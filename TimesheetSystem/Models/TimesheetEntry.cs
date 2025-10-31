@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata.Ecma335;
 using TimesheetSystem.Common;
-using TimesheetSystem.Services;
 
 namespace TimesheetSystem.Models
 {
+    //notes: there's lots to add here in reality (approved, billable, invoiced, etc) but out of scope for this task
     public class TimesheetEntry
     {
         public int Id { get; set; }

@@ -66,7 +66,7 @@ namespace TimesheetSystem.Controllers
                 TimesheetEntry = new TimesheetEntry()
                 {
                     UserId = selectedUserId,
-                    Date = selectedWeekStart,
+                    Date = DateTime.Today,
                     AvailableProjects = projects.ToList(),
                 }
             };
