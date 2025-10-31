@@ -14,5 +14,12 @@
 		   asp-route-userId="@Model.SelectedUserId"
 		   asp-route-weekStart="@Model.WeekStartDate.AddDays(7).ToString("yyyy-MM-dd")"
 		   class="btn btn-secondary">Next week</a>
+		   @* could add a datepicker here: select date, jump to that date's week, needs some script *@
+@* 		<form asp-controller="Timesheet" asp-action="Index" method="get" class="d-inline">
+			<input type="hidden" name="userId" value="@Model.SelectedUserId" />
+			<input type="date"
+				   class="form-control"
+				   style="max-width: 40px;" />
+		</form> *@
 	</div>
 </div>
