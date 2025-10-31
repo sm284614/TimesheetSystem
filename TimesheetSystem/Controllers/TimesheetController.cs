@@ -13,6 +13,9 @@ namespace TimesheetSystem.Controllers
         private readonly ITimesheetServices _timesheetServices;
         private readonly IUserServices _userServices;
         private readonly IProjectServices _projectServices;
+        private const string DateFormat = "yyyy-MM-dd";
+        private const string AddEditView = "Add";
+        private const string IndexView = "Index";
         public TimesheetController(ITimesheetServices timesheetServices, IUserServices userServices, IProjectServices projectServices)
         {
             _timesheetServices = timesheetServices;
@@ -79,20 +82,20 @@ namespace TimesheetSystem.Controllers
             if (!ModelState.IsValid)
             {
                 RepopulateFormData(viewModel);
-                return View("Add", viewModel);
+                return View(AddEditView, viewModel);
             }
             var result = _timesheetServices.AddEntry(viewModel.TimesheetEntry, viewModel.NavigationData.SelectedUserId);
             if (!result.IsSuccess)
             {
                 RepopulateFormData(viewModel);
                 TempData["Error"] = result.ErrorMessage;
-                return View("Add", viewModel);
+                return View(AddEditView, viewModel);
             }
             TempData["Success"] = "Timesheet entry added successfully.";
             // redirect back to index
             return RedirectToAction(
-                "Index",
-                new { userId = viewModel.NavigationData.SelectedUserId, weekStart = viewModel.NavigationData.WeekStartDate.ToString("yyyy-MM-dd") }
+                IndexView,
+                new { userId = viewModel.NavigationData.SelectedUserId, weekStart = viewModel.NavigationData.WeekStartDate.ToString(DateFormat) }
             );
         }
         public IActionResult Edit(int timesheetEntryId, int? userId, DateTime? weekStart)
@@ -103,7 +106,7 @@ namespace TimesheetSystem.Controllers
             if (existingEntry == null)
             {
                 TempData["Error"] = "Timesheet entry not found.";
-                return RedirectToAction("Index");
+                return RedirectToAction(IndexView);
             }
 
             var selectedWeekStart = weekStart ?? DateHelper.GetMondayOfWeek(existingEntry.Date);
@@ -124,7 +127,7 @@ namespace TimesheetSystem.Controllers
 
             viewModel.TimesheetEntry.AvailableProjects = projects.ToList();
 
-            return View("Add", viewModel); // Reuse the Add view
+            return View(AddEditView, viewModel); // Reuse the Add view
         }
         [HttpPost]
         public IActionResult EditEntry(TimesheetEntryFormViewModel viewModel)
@@ -132,7 +135,7 @@ namespace TimesheetSystem.Controllers
             if (!ModelState.IsValid)
             {
                 RepopulateFormData(viewModel);
-                return View("Add", viewModel);
+                return View(AddEditView, viewModel);
             }
 
             var result = _timesheetServices.EditEntry(viewModel.TimesheetEntry, viewModel.NavigationData.SelectedUserId);
@@ -141,16 +144,16 @@ namespace TimesheetSystem.Controllers
             {
                 RepopulateFormData(viewModel);
                 TempData["Error"] = result.ErrorMessage;
-                return View("Add", viewModel);
+                return View(AddEditView, viewModel);
             }
 
             TempData["Success"] = "Timesheet entry updated successfully.";
             return RedirectToAction(
-                "Index",
+                IndexView,
                 new
                 {
                     userId = viewModel.NavigationData.SelectedUserId,
-                    weekStart = viewModel.NavigationData.WeekStartDate.ToString("yyyy-MM-dd")
+                    weekStart = viewModel.NavigationData.WeekStartDate.ToString(DateFormat)
                 }
             );
         }
@@ -168,7 +171,7 @@ namespace TimesheetSystem.Controllers
             }
             // redirect back to index
             return RedirectToAction(
-                "Index",
+                IndexView,
                 new
                 {
                     userId,
