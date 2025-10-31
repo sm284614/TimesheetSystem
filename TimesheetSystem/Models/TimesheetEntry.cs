@@ -29,17 +29,19 @@ namespace TimesheetSystem.Models
 
         [Display(Name = "Description (Optional)")]
         [StringLength(255, ErrorMessage = "Description cannot exceed 255 characters")]
-        public string? Description { get; set; } //if this isn't nullable, it's made required by default: don't set to = ""
-        public List<Project> AvailableProjects { get; set; } = []; // Initialize to avoid null
+        public string? Description { get; set; } //if this isn't nullable, it's made required by default and interferes with validation (don't set to = "")
+        //TODO: AvailablePorjects isn't part of the model: move to viewbag?
+        public List<Project> AvailableProjects { get; set; } = []; 
         public TimesheetEntry()
-        {
+        {           
             Date = DateTime.Today;
         }
         public static ValidationResult? ValidateDateNoFuture(DateTime date, ValidationContext context)
         {
+            //defaults to today: potential issue with timezones (australians live in the future...)
             if (date > DateTime.Today)
             {
-                return new ValidationResult("Date cannot be in the future");
+                return new ValidationResult(Common.ErrorMessages.DateMustNotBeInTheFuture);
             }
             return ValidationResult.Success;
         }

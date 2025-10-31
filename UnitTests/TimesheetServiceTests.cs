@@ -10,7 +10,30 @@ namespace TimesheetSystem.UnitTests
 {
     public class TimesheetServicesTests
     {
-        //we're effectively using the same test data as the system is for mocking
+        // test categories
+        // * new timesheet entry data validity
+        //    * no/invalid userid
+        //    * no/invalid projectid
+        //    * non-matching userid/projectid
+        //    * invalid date (format, future)
+        //    * invalid hours (range)
+        //    * description?
+        // * existing timesheet edit data validity
+        // * timesheet seleting
+        // * listing of user timesheet entries per week
+        //    * attempt to view (add/edit/delete) other user entries
+        // * listing with project hours for user timesheet entries per week
+
+        //important things:
+        // validation (esp. hour/date boundaries), CRUD ops, 'security'
+
+        // note on things I'm not testing:
+        // complex time issues:
+        // * daylight savings clock-change days and hours worked potentially being max 23/25
+        // * validataion for timesheet entry day being in the future for server, but present for client (e.g. server is East US, client in australia)
+        // concurrent user operations
+        // connection to data source?
+
         private readonly Mock<ITimesheetDataStore> _mockDataStore;
         private readonly Mock<IUserServices> _mockUserServices;
         private readonly Mock<IProjectServices> _mockProjectServices;
