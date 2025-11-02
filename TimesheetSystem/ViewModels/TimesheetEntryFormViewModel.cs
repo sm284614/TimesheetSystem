@@ -7,5 +7,6 @@ namespace TimesheetSystem.ViewModels
     {
         public TimesheetNavigationViewModel NavigationData { get; set; } = new();
         public TimesheetEntry TimesheetEntry { get; set; } = new();
+        public List<Project> AvailableProjects { get; set; } = [];
     }
 }

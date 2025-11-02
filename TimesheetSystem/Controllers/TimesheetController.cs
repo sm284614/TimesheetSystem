@@ -60,10 +60,9 @@ namespace TimesheetSystem.Controllers
                 {
                     UserId = selectedUserId,
                     Date = DateTime.Today,
-                    AvailableProjects = projects.ToList(),
-                }
+                },
+                AvailableProjects = projects.ToList(),
             };
-
             return View(viewModel);
         }
         [HttpPost]
@@ -98,20 +97,15 @@ namespace TimesheetSystem.Controllers
                 TempData["Error"] = "Timesheet entry not found.";
                 return RedirectToAction(IndexView);
             }
-
             var selectedWeekStart = weekStart ?? DateHelper.GetMondayOfWeek(existingEntry.Date);
             var selectedUserId = userId ?? existingEntry.UserId;
-
             var projects = _projectServices.GetProjectsByUserId(selectedUserId) ?? [];
-
             var viewModel = new TimesheetEntryFormViewModel
             {
                 NavigationData = CreateDefaultNavigationData(selectedUserId, selectedWeekStart),
                 TimesheetEntry = existingEntry
             }; ;
-
-            viewModel.TimesheetEntry.AvailableProjects = projects.ToList();
-
+            viewModel.AvailableProjects = projects.ToList();
             return View(AddEditView, viewModel); // Reuse the Add view
         }
         [HttpPost]
@@ -174,7 +168,7 @@ namespace TimesheetSystem.Controllers
         }
         private void RepopulateFormData(TimesheetEntryFormViewModel viewModel)
         {
-            viewModel.TimesheetEntry.AvailableProjects = _projectServices.GetProjectsByUserId(viewModel.TimesheetEntry.UserId).ToList();
+            viewModel.AvailableProjects = _projectServices.GetProjectsByUserId(viewModel.TimesheetEntry.UserId).ToList();
             viewModel.NavigationData.AvailableUsers = _userServices.GetAllUsers().ToList();
         }
         private TimesheetNavigationViewModel CreateDefaultNavigationData(int selectedUserId, DateTime selectedWeekStart)

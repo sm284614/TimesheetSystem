@@ -30,8 +30,6 @@ namespace TimesheetSystem.Models
         [Display(Name = "Description (Optional)")]
         [StringLength(255, ErrorMessage = ErrorMessages.DescriptionExceedsMaximumLength)]
         public string? Description { get; set; } //if this isn't nullable, it's made required by default and interferes with validation (don't set to = "")
-        //TODO: AvailablePorjects isn't part of the model: move to viewbag?
-        public List<Project> AvailableProjects { get; set; } = []; 
         public TimesheetEntry()
         {           
             Date = DateTime.Today;

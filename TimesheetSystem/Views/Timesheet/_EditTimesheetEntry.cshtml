@@ -19,7 +19,7 @@
                 <select asp-for="TimesheetEntry.ProjectId"
                         class="form-select"
                         required
-                        asp-items="@(new SelectList(Model.TimesheetEntry.AvailableProjects, "Id", "Name"))">
+                        asp-items="@(new SelectList(Model.AvailableProjects, "Id", "Name"))">
                     <option value="0">Select Project:</option>
                 </select>
                 <span asp-validation-for="TimesheetEntry.ProjectId" class="text-danger"></span>
